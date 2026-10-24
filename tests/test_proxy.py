@@ -9,7 +9,7 @@ from httpx import ASGITransport
 from app.api import proxy
 from app.core.cache import SemanticCache
 from app.core.single_flight import SingleFlight
-from app.core.upstream import UpstreamClient
+from app.core.upstream import UpstreamClient, UpstreamError
 from app.main import app
 
 
@@ -27,7 +27,7 @@ class MockUpstreamClient(UpstreamClient):
         # Simulate provider failure if prompted
         messages = payload.get("messages", [])
         if any("TRIGGER_ERROR" in str(m.get("content", "")) for m in messages):
-            raise proxy.UpstreamError(500, "Simulated upstream provider error")
+            raise UpstreamError(500, "Simulated upstream provider error")
 
         if provider == "openai":
             return {
@@ -280,7 +280,7 @@ async def test_proxy_upstream_error_never_cached(test_client):
         "messages": [{"role": "user", "content": "TRIGGER_ERROR please"}],
     }
 
-    with pytest.raises(proxy.UpstreamError):
+    with pytest.raises(UpstreamError):
         await client.post("/v1/chat/completions", json=error_payload)
 
     # Error must not be cached
