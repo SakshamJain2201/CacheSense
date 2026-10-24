@@ -1,0 +1,87 @@
+{
+  "baselines": {
+    "embedding_p50_ms": 2.8,
+    "embedding_p95_ms": 3.45,
+    "faiss_search_p50_ms": 0.03,
+    "faiss_search_p95_ms": 0.04
+  },
+  "pure_miss": {
+    "p50_ms": 4.45,
+    "p95_ms": 806.4,
+    "p99_ms": 808.92,
+    "avg_ms": 85.59
+  },
+  "pure_hit": {
+    "p50_ms": 3.63,
+    "p95_ms": 6.19,
+    "p99_ms": 6.51,
+    "avg_ms": 4.05
+  },
+  "p95_latency_reduction_percent": 99.2,
+  "concurrency_scaling": [
+    {
+      "concurrency": 1,
+      "total_requests": 5,
+      "throughput_rps": 292.2,
+      "p50_ms": 3.22,
+      "p95_ms": 3.87,
+      "p99_ms": 3.98
+    },
+    {
+      "concurrency": 10,
+      "total_requests": 50,
+      "throughput_rps": 362.0,
+      "p50_ms": 26.14,
+      "p95_ms": 31.48,
+      "p99_ms": 32.25
+    },
+    {
+      "concurrency": 50,
+      "total_requests": 250,
+      "throughput_rps": 358.7,
+      "p50_ms": 138.06,
+      "p95_ms": 145.47,
+      "p99_ms": 146.63
+    },
+    {
+      "concurrency": 100,
+      "total_requests": 500,
+      "throughput_rps": 338.1,
+      "p50_ms": 266.79,
+      "p95_ms": 310.56,
+      "p99_ms": 314.09
+    }
+  ],
+  "workload_duplicate_ratios": [
+    {
+      "duplicate_ratio_percent": 0,
+      "p50_ms": 4.45,
+      "p95_ms": 806.4,
+      "p95_reduction_percent": 0.0
+    },
+    {
+      "duplicate_ratio_percent": 25,
+      "p50_ms": 4.25,
+      "p95_ms": 606.35,
+      "p95_reduction_percent": 24.8
+    },
+    {
+      "duplicate_ratio_percent": 50,
+      "p50_ms": 4.04,
+      "p95_ms": 406.3,
+      "p95_reduction_percent": 49.6
+    },
+    {
+      "duplicate_ratio_percent": 75,
+      "p50_ms": 3.83,
+      "p95_ms": 206.24,
+      "p95_reduction_percent": 74.4
+    },
+    {
+      "duplicate_ratio_percent": 100,
+      "p50_ms": 3.63,
+      "p95_ms": 6.19,
+      "p95_reduction_percent": 99.2
+    }
+  ]
+}

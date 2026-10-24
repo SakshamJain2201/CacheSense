@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cachesense-gateway
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - SIMILARITY_THRESHOLD=0.92
+      - MOCK_UPSTREAM_ENABLED=true
+      - MOCK_UPSTREAM_BASE_URL=http://mock-upstream:8080
+      - SQLITE_DB_PATH=/app/data/cache.db
+      - FAISS_INDEX_PATH=/app/data/faiss.index
+      - MAX_CACHE_ENTRIES=50000
+      - DEFAULT_TTL_SECONDS=86400
+      - MAX_CACHEABLE_TEMPERATURE=0.3
+      - SINGLE_FLIGHT_ENABLED=true
+      - CACHE_PII_FILTER_ENABLED=true
+    volumes:
+      - cachesense_data:/app/data
+    depends_on:
+      mock-upstream:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  mock-upstream:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cachesense-mock-upstream
+    restart: unless-stopped
+    command: ["python", "-m", "benchmarks.mock_upstream_server"]
+    ports:
+      - "8080:8080"
+    environment:
+      - MOCK_UPSTREAM_PORT=8080
+      - MOCK_UPSTREAM_LATENCY_MS=800
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  cachesense_data:
+    driver: local

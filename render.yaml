@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: cachesense
+    runtime: docker
+    plan: starter
+    region: oregon
+    healthCheckPath: /health
+    disk:
+      name: cachesense-data
+      mountPath: /app/data
+      sizeGB: 10
+    envVars:
+      - key: SIMILARITY_THRESHOLD
+        value: "0.92"
+      - key: MAX_CACHE_ENTRIES
+        value: "50000"
+      - key: DEFAULT_TTL_SECONDS
+        value: "86400"
+      - key: MAX_CACHEABLE_TEMPERATURE
+        value: "0.3"
+      - key: SINGLE_FLIGHT_ENABLED
+        value: "true"
+      - key: CACHE_PII_FILTER_ENABLED
+        value: "true"
+      - key: MOCK_UPSTREAM_ENABLED
+        value: "true" # Set to false and provide API keys for production live LLMs
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

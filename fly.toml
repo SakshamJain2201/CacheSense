@@ -1,0 +1,32 @@
+app = "cachesense"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[mounts]
+  source = "cachesense_data"
+  destination = "/app/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[http_service.checks]]
+  grace_period = "15s"
+  interval = "20s"
+  method = "GET"
+  timeout = "4s"
+  path = "/health"
+
+[env]
+  SIMILARITY_THRESHOLD = "0.92"
+  MAX_CACHE_ENTRIES = "50000"
+  DEFAULT_TTL_SECONDS = "86400"
+  MAX_CACHEABLE_TEMPERATURE = "0.3"
+  SINGLE_FLIGHT_ENABLED = "true"
+  CACHE_PII_FILTER_ENABLED = "true"
+  MOCK_UPSTREAM_ENABLED = "true"
